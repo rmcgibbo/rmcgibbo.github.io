@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Robert's Blog</title><link href="http://rmcgibbo.github.io/" rel="alternate"></link><link href="/feeds/python.atom.xml" rel="self"></link><id>http://rmcgibbo.github.io/</id><updated>2013-05-22T22:03:00-07:00</updated><entry><title>Under one roof</title><link href="http://rmcgibbo.github.io/blog/2013/05/22/under-one-roof/" rel="alternate"></link><updated>2013-05-22T22:03:00-07:00</updated><author><name>Robert McGibbon</name></author><id>tag:rmcgibbo.github.io,2013-05-22:blog/2013/05/22/under-one-roof/</id><summary type="html">&lt;p&gt;One of the goals of the MSMBuilder3 development is to make the package as easy
+to use as possible. Analyzing molecular dynamics is hard enough, so there's
+no reason that the software should get in your way.&lt;/p&gt;
+&lt;p&gt;Currently, all of the the MSMBuilder commands are separate scripts that are
+installed into your path, which means that you need to remember all of the
+commands. If you forget -- &lt;em&gt;wait, what is the name of the script for computing
+implied timescales?&lt;/em&gt; - you'll have to go back to the tutorial and check.
+That's a pain.&lt;/p&gt;
+&lt;p&gt;Most command line utilities let you access all their different utilities from
+subcommands: think &lt;code&gt;git pull&lt;/code&gt; or &lt;code&gt;svn checkout&lt;/code&gt;. For MSMBuilder3, we're going
+to put everything under &lt;code&gt;msmb&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;One immediate UX improvement is the the ability to have a help text directly
+on the root &lt;code&gt;msmb -h&lt;/code&gt; command.&lt;/p&gt;</summary><category term="msmbuilder"></category><category term="msmbuilder3"></category></entry></feed>
