@@ -11,4 +11,34 @@ That's a pain.&lt;/p&gt;
 subcommands: think &lt;code&gt;git pull&lt;/code&gt; or &lt;code&gt;svn checkout&lt;/code&gt;. For MSMBuilder3, we're going
 to put everything under &lt;code&gt;msmb&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;One immediate UX improvement is the the ability to have a help text directly
-on the root &lt;code&gt;msmb -h&lt;/code&gt; command.&lt;/p&gt;</summary><category term="msmbuilder"></category><category term="msmbuilder3"></category></entry></feed>
+on the root &lt;code&gt;msmb -h&lt;/code&gt; command.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;rmcgibbo@Roberts-MacBook-Pro-2 ~/projects/msmbuilder_config
+$ msmb -h
+MSMBuilder: Software for building Markov State Models for Biomolecular Dynamics
+===============================================================================
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi sed nibh ut orci
+suscipit scelerisque. Sed ligula augue, blandit ac eleifend eleifend, dapibus ac
+sapien. Duis eu tortor ac erat porta vulputate. Phasellus ac nisl quis magna
+
+
+Subcommands
+-----------
+atomindices
+    Construct list of atoms for RMSD calculations
+mkprofile
+    Create a sample configuration file
+assign
+    Assign trajectories to microstates.
+cluster
+    Cluster trajectories into microstates.
+
+Options
+-------
+--log-level=&amp;lt;Enum&amp;gt; (Application.log_level)
+    Default: 30
+    Choices: (0, 10, 20, 30, 40, 50, &amp;#39;DEBUG&amp;#39;, &amp;#39;INFO&amp;#39;, &amp;#39;WARN&amp;#39;, &amp;#39;ERROR&amp;#39;, &amp;#39;CRITICAL&amp;#39;)
+    Set the log level by value or name.
+
+To see all available configurables, use `--help-all`
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="msmbuilder"></category><category term="msmbuilder3"></category></entry></feed>
