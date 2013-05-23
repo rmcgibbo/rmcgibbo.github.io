@@ -1,5 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Robert's Blog</title><link href="http://rmcgibbo.github.io/" rel="alternate"></link><link href="/feeds/all.atom.xml" rel="self"></link><id>http://rmcgibbo.github.io/</id><updated>2013-05-23T00:08:00-07:00</updated><entry><title>OpenMM Script Builder</title><link href="http://rmcgibbo.github.io/blog/2013/05/23/openmm-builder/" rel="alternate"></link><updated>2013-05-23T00:08:00-07:00</updated><author><name>Robert McGibbon</name></author><id>tag:rmcgibbo.github.io,2013-05-23:blog/2013/05/23/openmm-builder/</id><summary type="html">&lt;p&gt;&lt;a href="http://builder.openmm.org"&gt;Build&lt;/a&gt; custom OpenMM scripts right in the browser!
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Robert's Blog</title><link href="http://rmcgibbo.github.io/" rel="alternate"></link><link href="http://rmcgibbo.github.io/feeds/all.atom.xml" rel="self"></link><id>http://rmcgibbo.github.io/</id><updated>2013-05-23T00:32:00-07:00</updated><entry><title>Projects in the Pipeline</title><link href="http://rmcgibbo.github.io/blog/2013/05/23/projects-in-the-pipeline/" rel="alternate"></link><updated>2013-05-23T00:32:00-07:00</updated><author><name>Robert McGibbon</name></author><id>tag:rmcgibbo.github.io,2013-05-23:blog/2013/05/23/projects-in-the-pipeline/</id><summary type="html">&lt;p&gt;A few of the projects on my mind right now. Some are father along than others.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Accelerated conformation clustering with RMSD using a kmeans-like algorithm.
+  The key to kmeans is that you can take the average of a set of data points
+  under an $L_p$ norm by just... taking their average. But that doesn't work
+  for RMSD, because alignment isn't transitive. I'm working on some ways to do
+  that averaging, and I think I can accelerate RMSD clustering compared to
+  k-medoids. The procedure works well for a small number of atoms, but needs
+  some tweaks -- I think a better weighting -- when there are more atoms (or
+  the dynamic range of distances is greater).&lt;/li&gt;
+&lt;li&gt;MSMAccelerator2: Last month, I refactored the MSMAccelerator code base. Well,
+  actually I ripped all of the old code out and started from the ground up. The
+  new code has a message massing architecture with ZeroMQ, and has a little
+  server that looks like a mini version of the FAH workserver. Now, this code
+  needs to get some exercise. I've started folding some small proteins, and
+  we need to analyze the convergence. I think we're going to see an impressive
+  speedup.&lt;/li&gt;
+&lt;li&gt;GBVI: We need to push on this. Currently, not a lot has been done.&lt;/li&gt;
+&lt;li&gt;Optimal-K: At this point, the framework for choosing the optimal number of
+  states, at least under euclidean metrics, is low hanging fruit. Getting this
+  finished and out the door is academic priority number 1.&lt;/li&gt;
+&lt;/ul&gt;</summary><category term="msmbuilder"></category><category term="science"></category></entry><entry><title>OpenMM Script Builder</title><link href="http://rmcgibbo.github.io/blog/2013/05/23/openmm-builder/" rel="alternate"></link><updated>2013-05-23T00:08:00-07:00</updated><author><name>Robert McGibbon</name></author><id>tag:rmcgibbo.github.io,2013-05-23:blog/2013/05/23/openmm-builder/</id><summary type="html">&lt;p&gt;&lt;a href="http://builder.openmm.org"&gt;Build&lt;/a&gt; custom OpenMM scripts right in the browser!
 &lt;a href="http://openmm.org/"&gt;OpenMM&lt;/a&gt; is one of the most flexible molecular dynamics
 packages, put it can be a little intimidating for the new user. Instead of
 interacting with it via a set of command line scripts, as one would with

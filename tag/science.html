@@ -7,7 +7,7 @@
   <title>Robert's Blog - science</title>
   <meta name="author" content="Robert McGibbon">
 
-    <link href="/atom.xml" type="application/atom+xml" rel="alternate"
+    <link href="http://rmcgibbo.github.io/atom.xml" type="application/atom+xml" rel="alternate"
         title="Robert's Blog Atom Feed" />
     
   
@@ -27,13 +27,40 @@
         rel="stylesheet" type="text/css">
   <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic"
         rel="stylesheet" type="text/css">
+
+  <!-- Using MathJax, with the delimiters $ -->
+  <!-- Conflict with pygments for the .mo and .mi -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+    styles: {
+    ".MathJax .mo, .MathJax .mi": {color: "black ! important"}}
+    },
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']],processEscapes: true}
+    });
+    MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
+    var VARIANT = MathJax.OutputJax["HTML-CSS"].FONTDATA.VARIANT;
+    VARIANT["normal"].fonts.unshift("MathJax_SansSerif");
+    VARIANT["bold"].fonts.unshift("MathJax_SansSerif-bold");
+    VARIANT["italic"].fonts.unshift("MathJax_SansSerif-italic");
+    VARIANT["-tex-mathit"].fonts.unshift("MathJax_SansSerif-italic");
+    });
+    MathJax.Hub.Register.StartupHook("SVG Jax Ready",function () {
+    var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;
+    VARIANT["normal"].fonts.unshift("MathJax_SansSerif");
+    VARIANT["bold"].fonts.unshift("MathJax_SansSerif-bold");
+    VARIANT["italic"].fonts.unshift("MathJax_SansSerif-italic");
+    VARIANT["-tex-mathit"].fonts.unshift("MathJax_SansSerif-italic");
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
 </head><body>
   <header role="banner"><hgroup>
   <h1><a href="http://rmcgibbo.github.io/">Robert's Blog</a></h1>
       <h2>Computational Biophysics, Software, Politics, Policy</h2>
   </hgroup></header>
   <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss">RSS</a></li>
+  <li><a href="http://rmcgibbo.github.io/atom.xml" rel="subscribe-rss">RSS</a></li>
   </ul>
 
 
@@ -54,6 +81,19 @@
     <div id="content">
       <div class="blog-index">
     	  		<article>
+    		<header>
+          <h1 class="entry-title">
+        <a href="http://rmcgibbo.github.io/blog/2013/05/23/projects-in-the-pipeline/">Projects in the Pipeline</a>
+      </h1>
+          <p class="meta"><time datetime="2013-05-23T00:32:00" pubdate>May 23, 2013</time></p>
+</header>
+
+  <div class="entry-content"><p>A few of the projects on my mind right now. Some are father along than others.</p></div>
+  <footer>
+    <a rel="full-article" href="http://rmcgibbo.github.io/blog/2013/05/23/projects-in-the-pipeline/">Read On &crarr;</a>
+  </footer>
+  		</article>
+  	  		<article>
     		<header>
           <h1 class="entry-title">
         <a href="http://rmcgibbo.github.io/blog/2013/05/23/openmm-builder/">OpenMM Script Builder</a>
@@ -110,6 +150,9 @@ for kinetic clustering of protein ...</p></div>
   <section>
     <h1>Recent Posts</h1>
     <ul id="recent_posts">
+            <li class="post">
+          <a href="http://rmcgibbo.github.io/blog/2013/05/23/projects-in-the-pipeline/">Projects in the Pipeline</a>
+      </li>
             <li class="post">
           <a href="http://rmcgibbo.github.io/blog/2013/05/23/openmm-builder/">OpenMM Script Builder</a>
       </li>

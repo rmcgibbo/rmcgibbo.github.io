@@ -4,7 +4,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Robert's Blog - web</title>
+  <title>Projects in the Pipeline</title>
   <meta name="author" content="Robert McGibbon">
 
     <link href="http://rmcgibbo.github.io/atom.xml" type="application/atom+xml" rel="alternate"
@@ -79,34 +79,72 @@
   </ul></nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
-    	  		<article>
-    		<header>
-          <h1 class="entry-title">
-        <a href="http://rmcgibbo.github.io/blog/2013/05/23/openmm-builder/">OpenMM Script Builder</a>
-      </h1>
-          <p class="meta"><time datetime="2013-05-23T00:08:00" pubdate>May 23, 2013</time></p>
+      <div>
+  <article class="hentry" role="article">
+    <header>
+          <h1 class="entry-title">Projects in the Pipeline</h1>
+          <p class="meta"><time datetime="2013-05-23T00:32:00" pubdate>May 23, 2013</time></p>
 </header>
 
-  <div class="entry-content"><p><a href="http://builder.openmm.org">Build</a> custom OpenMM scripts right in the browser!
-<a href="http://openmm.org/">OpenMM</a> is one of the most flexible molecular dynamics
-packages, put it can be a little intimidating for the new user. Instead of
-interacting with it via a set of command line scripts, as one would with
-amber or gromacs, to interact ...</p></div>
-  <footer>
-    <a rel="full-article" href="http://rmcgibbo.github.io/blog/2013/05/23/openmm-builder/">Read On &crarr;</a>
-  </footer>
-  		</article>
-  	  	<div class="pagination">
-  
-    <br />
-</div>  </div>
+  <div class="entry-content"><p>A few of the projects on my mind right now. Some are father along than others.</p>
+<ul>
+<li>Accelerated conformation clustering with RMSD using a kmeans-like algorithm.
+  The key to kmeans is that you can take the average of a set of data points
+  under an $L_p$ norm by just... taking their average. But that doesn't work
+  for RMSD, because alignment isn't transitive. I'm working on some ways to do
+  that averaging, and I think I can accelerate RMSD clustering compared to
+  k-medoids. The procedure works well for a small number of atoms, but needs
+  some tweaks -- I think a better weighting -- when there are more atoms (or
+  the dynamic range of distances is greater).</li>
+<li>MSMAccelerator2: Last month, I refactored the MSMAccelerator code base. Well,
+  actually I ripped all of the old code out and started from the ground up. The
+  new code has a message massing architecture with ZeroMQ, and has a little
+  server that looks like a mini version of the FAH workserver. Now, this code
+  needs to get some exercise. I've started folding some small proteins, and
+  we need to analyze the convergence. I think we're going to see an impressive
+  speedup.</li>
+<li>GBVI: We need to push on this. Currently, not a lot has been done.</li>
+<li>Optimal-K: At this point, the framework for choosing the optimal number of
+  states, at least under euclidean metrics, is low hanging fruit. Getting this
+  finished and out the door is academic priority number 1.</li>
+</ul></div>
+    <footer>
+      <p class="meta">
+  <span class="byline author vcard">
+    Posted by <span class="fn">Robert McGibbon</span>
+  </span>
+  <time datetime="2013-05-23T00:32:00" pubdate>May 23, 2013</time>    <span class="categories">
+        <a class="category" href="http://rmcgibbo.github.io/tag/msmbuilder.html">msmbuilder</a>
+        <a class="category" href="http://rmcgibbo.github.io/tag/science.html">science</a>
+      </span>
+  </p>      <div class="sharing">
+    <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://rmcgibbo.github.io/blog/2013/05/23/projects-in-the-pipeline/" data-via="rmcgibbo" data-counturl="http://rmcgibbo.github.io/blog/2013/05/23/projects-in-the-pipeline/" >Tweet</a>
+      </div>    </footer>
+  </article>
+
+    <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div>
+  </section>
+  </div>
       <aside class="sidebar">
   <section>
     <h1>Recent Posts</h1>
     <ul id="recent_posts">
             <li class="post">
+          <a href="http://rmcgibbo.github.io/blog/2013/05/23/projects-in-the-pipeline/">Projects in the Pipeline</a>
+      </li>
+            <li class="post">
           <a href="http://rmcgibbo.github.io/blog/2013/05/23/openmm-builder/">OpenMM Script Builder</a>
+      </li>
+            <li class="post">
+          <a href="http://rmcgibbo.github.io/blog/2013/05/22/first-first-author/">First First-Author Paper</a>
+      </li>
+            <li class="post">
+          <a href="http://rmcgibbo.github.io/blog/2013/05/22/group-meeting/">Group Meeting</a>
+      </li>
+            <li class="post">
+          <a href="http://rmcgibbo.github.io/blog/2013/05/22/under-one-roof/">Under One Roof</a>
       </li>
           </ul>
   </section>
@@ -190,6 +228,9 @@ amber or gromacs, to interact ...</p></div>
 	    } catch(err) {}
 	</script>
 	<script type="text/javascript">
+	            var disqus_identifier = 'http://rmcgibbo.github.io/blog/2013/05/23/projects-in-the-pipeline/';
+          var disqus_url = 'http://rmcgibbo.github.io/blog/2013/05/23/projects-in-the-pipeline/';
+	  var disqus_title = 'Projects in the Pipeline';
 	  	  var disqus_shortname = 'rmcgibbo';
 	  (function() {
 	    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
