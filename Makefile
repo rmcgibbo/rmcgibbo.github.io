@@ -25,6 +25,7 @@ help:
 	@echo 'Makefile for a pelican Web site                                        '
 	@echo '                                                                       '
 	@echo 'Usage:                                                                 '
+	@echo '   make new_post                    template a new post                '
 	@echo '   make html                        (re)generate the web site          '
 	@echo '   make clean                       remove the generated files         '
 	@echo '   make regenerate                  regenerate files upon modification '
@@ -42,7 +43,6 @@ help:
 
 new_post:
 	$(PY) scripts/new_post.py
-
 
 html: clean $(OUTPUTDIR)/index.html
 
@@ -85,7 +85,7 @@ s3_upload: publish
 	s3cmd sync $(OUTPUTDIR)/ s3://$(S3_BUCKET) --acl-public --delete-removed
 
 github: publish
-	ghp-import $(OUTPUTDIR)
+	scripts/ghp-import $(OUTPUTDIR)
 	git push origin gh-pages
 
 .PHONY: html help clean regenerate serve devserver publish ssh_upload rsync_upload dropbox_upload ftp_upload s3_upload github
