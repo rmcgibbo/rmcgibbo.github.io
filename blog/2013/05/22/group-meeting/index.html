@@ -4,7 +4,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Robert's Blog</title>
+  <title>Group Meeting</title>
   <meta name="author" content="Robert McGibbon">
 
     <link href="/atom.xml" type="application/atom+xml" rel="alternate"
@@ -52,9 +52,48 @@
   </ul></nav>
   <div id="main">
     <div id="content">
-      <ul>
-    <li><a href="http://rmcgibbo.github.io/category/misc.html">misc</a></li>
-</ul>
+      <div>
+  <article class="hentry" role="article">
+    <header>
+          <h1 class="entry-title">Group Meeting</h1>
+          <p class="meta"><time datetime="2013-05-22T23:33:00" pubdate>May 22, 2013</time></p>
+</header>
+
+  <div class="entry-content"><p>A few weeks ago, I gave the Pande Group meeting. The slides are on <a href="https://github.com/rmcgibbo/group_meeting_april22">github</a>,
+and you can view them <a href="http://htmlpreview.github.io/?http://github.com/rmcgibbo/group_meeting_april22/blob/master/index.html">here</a>.
+The title of the talk is <em>Protein Folding is Easy: Towards Markov State Models
+for Conformational Change</em>, and mostly addresses my learning distance metrics
+for kinetic clustering of protein conformations from molecular dynamics
+simulations. The central challenge here is detecting structurally subtle but
+slow conformational changes in a dataset that might contain massive structural
+changes, like folding. Simply clustering at a tiny radius with a standard distance
+metric (RMSD) is fine in theory, but fails in practice to deal with the bias-variance
+tradeoff effectively.</p>
+<p>The slides are written in pure markdown and rendered to HTML5 using an adapted
+version of the google-io-2012 HTML5 slide deck. The slide deck is now a little
+python package, hosted on <a href="https://github.com/rmcgibbo/slidedeck">github</a>. After
+installing it (<code>python setup.py install</code>), just run <code>slidedeck create</code> to get
+started with a new template deck, and <code>slidedeck render</code> to make some HTML5.</p></div>
+    <footer>
+      <p class="meta">
+  <span class="byline author vcard">
+    Posted by <span class="fn">Robert McGibbon</span>
+  </span>
+  <time datetime="2013-05-22T23:33:00" pubdate>May 22, 2013</time>    <span class="categories">
+        <a class="category" href="http://rmcgibbo.github.io/tag/group-meeting.html">group meeting</a>
+        <a class="category" href="http://rmcgibbo.github.io/tag/science.html">science</a>
+        <a class="category" href="http://rmcgibbo.github.io/tag/python.html">python</a>
+      </span>
+  </p>      <div class="sharing">
+    <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://rmcgibbo.github.io/blog/2013/05/22/group-meeting/" data-via="rmcgibbo" data-counturl="http://rmcgibbo.github.io/blog/2013/05/22/group-meeting/" >Tweet</a>
+      </div>    </footer>
+  </article>
+
+    <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div>
+  </section>
+  </div>
       <aside class="sidebar">
   <section>
     <h1>Recent Posts</h1>
@@ -140,6 +179,9 @@
   <span class="credit">Powered by <a href="http://getpelican.com">Pelican</a></span>
 </p></footer>
   	<script type="text/javascript">
+	            var disqus_identifier = 'http://rmcgibbo.github.io/blog/2013/05/22/group-meeting/';
+          var disqus_url = 'http://rmcgibbo.github.io/blog/2013/05/22/group-meeting/';
+	  var disqus_title = 'Group Meeting';
 	  	  var disqus_shortname = 'rmcgibbo';
 	  (function() {
 	    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Robert's Blog</title><link href="http://rmcgibbo.github.io/" rel="alternate"></link><link href="/feeds/python.atom.xml" rel="self"></link><id>http://rmcgibbo.github.io/</id><updated>2013-05-22T22:03:00-07:00</updated><entry><title>Under one roof</title><link href="http://rmcgibbo.github.io/blog/2013/05/22/under-one-roof/" rel="alternate"></link><updated>2013-05-22T22:03:00-07:00</updated><author><name>Robert McGibbon</name></author><id>tag:rmcgibbo.github.io,2013-05-22:blog/2013/05/22/under-one-roof/</id><summary type="html">&lt;p&gt;One of the goals of the MSMBuilder3 development is to make the package as easy
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Robert's Blog</title><link href="http://rmcgibbo.github.io/" rel="alternate"></link><link href="/feeds/misc.atom.xml" rel="self"></link><id>http://rmcgibbo.github.io/</id><updated>2013-05-22T23:49:00-07:00</updated><entry><title>First First-Author Paper</title><link href="http://rmcgibbo.github.io/blog/2013/05/22/first-first-author/" rel="alternate"></link><updated>2013-05-22T23:49:00-07:00</updated><author><name>Robert McGibbon</name></author><id>tag:rmcgibbo.github.io,2013-05-22:blog/2013/05/22/first-first-author/</id><summary type="html">&lt;p&gt;My first first-author &lt;a href="http://pubs.acs.org/doi/abs/10.1021/ct400132h"&gt;paper&lt;/a&gt; 
+has just been accepted by the Journal of Chemical Theory and Computation.
+The title is &lt;em&gt;Learning Kinetic Distance Metrics for Markov State Models of Protein Conformational Dynamics&lt;/em&gt;.&lt;/p&gt;</summary><category term="science"></category></entry><entry><title>Group Meeting</title><link href="http://rmcgibbo.github.io/blog/2013/05/22/group-meeting/" rel="alternate"></link><updated>2013-05-22T23:33:00-07:00</updated><author><name>Robert McGibbon</name></author><id>tag:rmcgibbo.github.io,2013-05-22:blog/2013/05/22/group-meeting/</id><summary type="html">&lt;p&gt;A few weeks ago, I gave the Pande Group meeting. The slides are on &lt;a href="https://github.com/rmcgibbo/group_meeting_april22"&gt;github&lt;/a&gt;,
+and you can view them &lt;a href="http://htmlpreview.github.io/?http://github.com/rmcgibbo/group_meeting_april22/blob/master/index.html"&gt;here&lt;/a&gt;.
+The title of the talk is &lt;em&gt;Protein Folding is Easy: Towards Markov State Models
+for Conformational Change&lt;/em&gt;, and mostly addresses my learning distance metrics
+for kinetic clustering of protein conformations from molecular dynamics
+simulations. The central challenge here is detecting structurally subtle but
+slow conformational changes in a dataset that might contain massive structural
+changes, like folding. Simply clustering at a tiny radius with a standard distance
+metric (RMSD) is fine in theory, but fails in practice to deal with the bias-variance
+tradeoff effectively.&lt;/p&gt;
+&lt;p&gt;The slides are written in pure markdown and rendered to HTML5 using an adapted
+version of the google-io-2012 HTML5 slide deck. The slide deck is now a little
+python package, hosted on &lt;a href="https://github.com/rmcgibbo/slidedeck"&gt;github&lt;/a&gt;. After
+installing it (&lt;code&gt;python setup.py install&lt;/code&gt;), just run &lt;code&gt;slidedeck create&lt;/code&gt; to get
+started with a new template deck, and &lt;code&gt;slidedeck render&lt;/code&gt; to make some HTML5.&lt;/p&gt;</summary><category term="group meeting"></category><category term="science"></category><category term="python"></category></entry><entry><title>Under One Roof</title><link href="http://rmcgibbo.github.io/blog/2013/05/22/under-one-roof/" rel="alternate"></link><updated>2013-05-22T22:03:00-07:00</updated><author><name>Robert McGibbon</name></author><id>tag:rmcgibbo.github.io,2013-05-22:blog/2013/05/22/under-one-roof/</id><summary type="html">&lt;p&gt;One of the goals of the MSMBuilder3 development is to make the package as easy
 to use as possible. Analyzing molecular dynamics is hard enough, so there's
 no reason that the software should get in your way.&lt;/p&gt;
 &lt;p&gt;Currently, all of the the MSMBuilder commands are separate scripts that are
@@ -99,4 +115,4 @@ command line or in a config file. The config file is pretty easy to work with to
 since you can create a default one with &lt;code&gt;msmb mkprofile&lt;/code&gt; that has all of the
 possible options, just commented out. It's based on the &lt;a href="http://ipython.org/ipython-doc/stable/config/overview.html"&gt;IPython configuration system&lt;/a&gt;,
 which is definitely &lt;a href="http://python.6.x6.nabble.com/IPython-config-HasTraits-Traitlets-as-an-independent-library-td5014385.html"&gt;the best&lt;/a&gt;.
-I'll post on that later.&lt;/p&gt;</summary><category term="msmbuilder"></category><category term="msmbuilder3"></category></entry></feed>
+I'll post on that later.&lt;/p&gt;</summary><category term="msmbuilder"></category><category term="msmbuilder3"></category><category term="python"></category></entry></feed>
