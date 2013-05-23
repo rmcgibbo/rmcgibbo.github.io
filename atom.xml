@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Robert's Blog</title><link href="http://rmcgibbo.github.io/" rel="alternate"></link><link href="/atom.xml" rel="self"></link><id>http://rmcgibbo.github.io/</id><updated>2013-05-22T23:49:00-07:00</updated><entry><title>First First-Author Paper</title><link href="http://rmcgibbo.github.io/blog/2013/05/22/first-first-author/" rel="alternate"></link><updated>2013-05-22T23:49:00-07:00</updated><author><name>Robert McGibbon</name></author><id>tag:rmcgibbo.github.io,2013-05-22:blog/2013/05/22/first-first-author/</id><summary type="html">&lt;p&gt;My first first-author &lt;a href="http://pubs.acs.org/doi/abs/10.1021/ct400132h"&gt;paper&lt;/a&gt; 
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Robert's Blog</title><link href="http://rmcgibbo.github.io/" rel="alternate"></link><link href="/atom.xml" rel="self"></link><id>http://rmcgibbo.github.io/</id><updated>2013-05-23T00:08:00-07:00</updated><entry><title>OpenMM Script Builder</title><link href="http://rmcgibbo.github.io/blog/2013/05/23/openmm-builder/" rel="alternate"></link><updated>2013-05-23T00:08:00-07:00</updated><author><name>Robert McGibbon</name></author><id>tag:rmcgibbo.github.io,2013-05-23:blog/2013/05/23/openmm-builder/</id><summary type="html">&lt;p&gt;&lt;a href="http://builder.openmm.org"&gt;Build&lt;/a&gt; custom OpenMM scripts right in the browser!
+&lt;a href="http://openmm.org/"&gt;OpenMM&lt;/a&gt; is one of the most flexible molecular dynamics
+packages, put it can be a little intimidating for the new user. Instead of
+interacting with it via a set of command line scripts, as one would with
+amber or gromacs, to interact with OpenMM you write a little python script.
+If you've never written a script before, this might seem a little unfamiliar,
+but it's an incredibly powerful paradigm.&lt;/p&gt;
+&lt;p&gt;But to help you out, I've written a little &lt;a href="http://builder.openmm.org"&gt;web application&lt;/a&gt;
+that'll build an OpenMM python script for you. As you select the options via
+the menus, the script will be "written" for you, live. The code is
+live on heroku, at &lt;a href="http://builder.openmm.org"&gt;builder.openmm.org&lt;/a&gt;, and free (GPL)
+on &lt;a href="https://github.com/rmcgibbo/openmm-webbuilder"&gt;github&lt;/a&gt;. Fork away.&lt;/p&gt;
+&lt;p&gt;It would be really awesome if the webapp had a "run" button that would run
+your simulation for a short period of time on a donated GPU, but that's
+going to a little nontrivial, especially with the security ramifications. Pull
+requests welcome!&lt;/p&gt;</summary><category term="web"></category><category term="science"></category></entry><entry><title>First First-Author Paper</title><link href="http://rmcgibbo.github.io/blog/2013/05/22/first-first-author/" rel="alternate"></link><updated>2013-05-22T23:49:00-07:00</updated><author><name>Robert McGibbon</name></author><id>tag:rmcgibbo.github.io,2013-05-22:blog/2013/05/22/first-first-author/</id><summary type="html">&lt;p&gt;My first first-author &lt;a href="http://pubs.acs.org/doi/abs/10.1021/ct400132h"&gt;paper&lt;/a&gt; 
 has just been accepted by the Journal of Chemical Theory and Computation.
 The title is &lt;em&gt;Learning Kinetic Distance Metrics for Markov State Models of Protein Conformational Dynamics&lt;/em&gt;.&lt;/p&gt;</summary><category term="science"></category></entry><entry><title>Group Meeting</title><link href="http://rmcgibbo.github.io/blog/2013/05/22/group-meeting/" rel="alternate"></link><updated>2013-05-22T23:33:00-07:00</updated><author><name>Robert McGibbon</name></author><id>tag:rmcgibbo.github.io,2013-05-22:blog/2013/05/22/group-meeting/</id><summary type="html">&lt;p&gt;A few weeks ago, I gave the Pande Group meeting. The slides are on &lt;a href="https://github.com/rmcgibbo/group_meeting_april22"&gt;github&lt;/a&gt;,
 and you can view them &lt;a href="http://htmlpreview.github.io/?http://github.com/rmcgibbo/group_meeting_april22/blob/master/index.html"&gt;here&lt;/a&gt;.
