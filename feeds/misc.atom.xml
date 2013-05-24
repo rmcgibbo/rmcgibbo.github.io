@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Robert's Notebook</title><link href="http://rmcgibbo.github.io/" rel="alternate"></link><link href="/feeds/misc.atom.xml" rel="self"></link><id>http://rmcgibbo.github.io/</id><updated>2013-05-23T23:20:00-07:00</updated><entry><title>Faster PyYAML Parsing with LibYAML</title><link href="http://rmcgibbo.github.io/blog/2013/05/23/faster-yaml-parsing-with-libyaml/" rel="alternate"></link><updated>2013-05-23T23:20:00-07:00</updated><author><name>Robert McGibbon</name></author><id>tag:rmcgibbo.github.io,2013-05-23:blog/2013/05/23/faster-yaml-parsing-with-libyaml/</id><summary type="html">&lt;p&gt;This morning, &lt;a href="https://github.com/schwancr"&gt;Christian&lt;/a&gt; submitted a great
+&lt;a href="https://github.com/SimTk/msmbuilder/pull/199"&gt;pull request&lt;/a&gt; to speed up YAML
+parsing in MSMBuilder using LibYAML. In MSMBuilder,
+we use a YAML file to save the "project", which is keeps the path to all of
+the files associated with an MSMBuilder project, such as the different
+trajectories, and a PDB for the protein's topology.&lt;/p&gt;
+&lt;p&gt;YAML is convenient here: being easily editable plain text, it makes it pretty
+easy to check what's in your project, and perform simple tasks like splitting
+a project in two, without needing any libraries or programming. But there's
+one big disadvantage: it can be really really slow to load a large project
+file. Although it's not usually the rate limiting step, it's still really
+annoying.&lt;/p&gt;
+&lt;p&gt;Using the LibYAML parser (written in C) can speed up the reading significantly.
+To see if your python installation is linked against LibYAML, try the following
+command.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;python -c &lt;span class="s2"&gt;&amp;quot;from yaml import CLoader&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If this blows up with an ImportError, then LibYAML isn't installed. If the
+commands runs just fine, then you've already got LibYAML.&lt;/p&gt;
+&lt;h2&gt;Installing LibYAML&lt;/h2&gt;
+&lt;p&gt;To install LibYAML, you can either build it from source or use a package manager.
+If you've got &lt;code&gt;sudo&lt;/code&gt; privileges, you can easily install LibYAML from source,
+following the directions from &lt;a href="http://pyyaml.org/wiki/LibYAML"&gt;here&lt;/a&gt;, with:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;wget http://pyyaml.org/download/libyaml/yaml-0.1.4.tar.gz
+tar -xzvf yaml-0.1.4.tar.gz
+&lt;span class="nb"&gt;cd &lt;/span&gt;yaml-0.1.4
+./configure
+make
+sudo make install
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If you're on a machine without &lt;code&gt;sudo&lt;/code&gt; privileges, use a &lt;code&gt;--prefix&lt;/code&gt; flag with
+&lt;code&gt;configure&lt;/code&gt; to install the library in user-space. You'll probably also have to
+add the new library directory to &lt;code&gt;LD_LIBRARY_PATH&lt;/code&gt; (or &lt;code&gt;DYLD_LIBRARY_PATH&lt;/code&gt; on mac).&lt;/p&gt;
+&lt;p&gt;If you access to a package manager like &lt;code&gt;apt-get&lt;/code&gt; on ubuntu, then you can install
+LibYAML with the command &lt;code&gt;sudo apt-get install libyaml-dev&lt;/code&gt;. On a centos
+system, you should be able to get LibYAML with &lt;code&gt;sudo yum install libyaml-devel&lt;/code&gt;.&lt;/p&gt;
+&lt;h2&gt;Rebuilding PyYAML with the C Bindings&lt;/h2&gt;
+&lt;p&gt;If you've installed LibYAML with the default location (either by compiling from
+source without --prefix, or using your package manager), then you can rebuild PyYAML
+with the LibYAML bindings by just reinstalling it through pip with &lt;code&gt;pip install pyyaml --upgrade --force&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Otherwise, download the source package from &lt;a href="https://pypi.python.org/pypi/PyYAML"&gt;pypi&lt;/a&gt;
+and edit the &lt;code&gt;setup.cfg&lt;/code&gt; file to point to the lib and include directories of your
+LibYAML installation. I configured LibYAML with &lt;code&gt;--prefix=$HOME/opt/yaml&lt;/code&gt;, so
+uncommented lines 7 and 10 of &lt;code&gt;setup.cfg&lt;/code&gt;, and edited them to read&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# List of directories to search for &amp;#39;yaml.h&amp;#39; (separated by &amp;#39;:&amp;#39;).&lt;/span&gt;
+&lt;span class="nv"&gt;include_dirs&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/usr/local/include:../../include:/home/rmcgibbo/opt/yaml/include
+
+&lt;span class="c"&gt;# List of directories to search for &amp;#39;libyaml.a&amp;#39; (separated by &amp;#39;:&amp;#39;).&lt;/span&gt;
+&lt;span class="nv"&gt;library_dirs&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/usr/local/lib:../../lib:/home/rmcgibbo/opt/yaml/lib
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;And then rebuilt the package with&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;python setup.py --with-libyaml install
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="msmbuilder"></category></entry><entry><title>Projects in the Pipeline</title><link href="http://rmcgibbo.github.io/blog/2013/05/23/projects-in-the-pipeline/" rel="alternate"></link><updated>2013-05-23T00:32:00-07:00</updated><author><name>Robert McGibbon</name></author><id>tag:rmcgibbo.github.io,2013-05-23:blog/2013/05/23/projects-in-the-pipeline/</id><summary type="html">&lt;p&gt;A few of the projects on my mind right now. Some are father along than others.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Accelerated conformation clustering with RMSD using a kmeans-like algorithm.
+  The key to kmeans is that you can take the average of a set of data points
+  under an $L_p$ norm by just... taking their average. But that doesn't work
+  for RMSD, because alignment isn't transitive. I'm working on some ways to do
+  that averaging, and I think I can accelerate RMSD clustering compared to
+  k-medoids. The procedure works well for a small number of atoms, but needs
+  some tweaks -- I think a better weighting -- when there are more atoms (or
+  the dynamic range of distances is greater).&lt;/li&gt;
+&lt;li&gt;MSMAccelerator2: Last month, I refactored the MSMAccelerator code base. Well,
+  actually I ripped all of the old code out and started from the ground up. The
+  new code has a message massing architecture with ZeroMQ, and has a little
+  server that looks like a mini version of the FAH workserver. Now, this code
+  needs to get some exercise. I've started folding some small proteins, and
+  we need to analyze the convergence. I think we're going to see an impressive
+  speedup.&lt;/li&gt;
+&lt;li&gt;GBVI: We need to push on this. Currently, not a lot has been done.&lt;/li&gt;
+&lt;li&gt;Optimal-K: At this point, the framework for choosing the optimal number of
+  states, at least under euclidean metrics, is low hanging fruit. Getting this
+  finished and out the door is academic priority number 1.&lt;/li&gt;
+&lt;/ul&gt;</summary><category term="msmbuilder"></category><category term="science"></category></entry><entry><title>OpenMM Script Builder</title><link href="http://rmcgibbo.github.io/blog/2013/05/23/openmm-builder/" rel="alternate"></link><updated>2013-05-23T00:08:00-07:00</updated><author><name>Robert McGibbon</name></author><id>tag:rmcgibbo.github.io,2013-05-23:blog/2013/05/23/openmm-builder/</id><summary type="html">&lt;p&gt;&lt;a href="http://builder.openmm.org"&gt;Build&lt;/a&gt; custom OpenMM scripts right in the browser!
+&lt;a href="http://openmm.org/"&gt;OpenMM&lt;/a&gt; is one of the most flexible molecular dynamics
+packages, put it can be a little intimidating for the new user. Instead of
+interacting with it via a set of command line scripts, as one would with
+amber or gromacs, to interact with OpenMM you write a little python script.
+If you've never written a script before, this might seem a little unfamiliar,
+but it's an incredibly powerful paradigm.&lt;/p&gt;
+&lt;p&gt;But to help you out, I've written a little &lt;a href="http://builder.openmm.org"&gt;web application&lt;/a&gt;
+that'll build an OpenMM python script for you. As you select the options via
+the menus, the script will be "written" for you, live. The code is
+live on heroku, at &lt;a href="http://builder.openmm.org"&gt;builder.openmm.org&lt;/a&gt;, and free (GPL)
+on &lt;a href="https://github.com/rmcgibbo/openmm-webbuilder"&gt;github&lt;/a&gt;. Fork away.&lt;/p&gt;
+&lt;p&gt;It would be really awesome if the webapp had a "run" button that would run
+your simulation for a short period of time on a donated GPU, but that's
+going to a little nontrivial, especially with the security ramifications. Pull
+requests welcome!&lt;/p&gt;</summary><category term="web"></category><category term="science"></category></entry><entry><title>First First-Author Paper</title><link href="http://rmcgibbo.github.io/blog/2013/05/22/first-first-author/" rel="alternate"></link><updated>2013-05-22T23:49:00-07:00</updated><author><name>Robert McGibbon</name></author><id>tag:rmcgibbo.github.io,2013-05-22:blog/2013/05/22/first-first-author/</id><summary type="html">&lt;p&gt;My first first-author &lt;a href="http://pubs.acs.org/doi/abs/10.1021/ct400132h"&gt;paper&lt;/a&gt; 
+has just been accepted by the Journal of Chemical Theory and Computation.
+The title is &lt;em&gt;Learning Kinetic Distance Metrics for Markov State Models of Protein Conformational Dynamics&lt;/em&gt;.&lt;/p&gt;</summary><category term="science"></category></entry><entry><title>Group Meeting</title><link href="http://rmcgibbo.github.io/blog/2013/05/22/group-meeting/" rel="alternate"></link><updated>2013-05-22T23:33:00-07:00</updated><author><name>Robert McGibbon</name></author><id>tag:rmcgibbo.github.io,2013-05-22:blog/2013/05/22/group-meeting/</id><summary type="html">&lt;p&gt;A few weeks ago, I gave the Pande Group meeting. The slides are on &lt;a href="https://github.com/rmcgibbo/group_meeting_april22"&gt;github&lt;/a&gt;,
+and you can view them &lt;a href="http://htmlpreview.github.io/?http://github.com/rmcgibbo/group_meeting_april22/blob/master/index.html"&gt;here&lt;/a&gt;.
+The title of the talk is &lt;em&gt;Protein Folding is Easy: Towards Markov State Models
+for Conformational Change&lt;/em&gt;, and mostly addresses my learning distance metrics
+for kinetic clustering of protein conformations from molecular dynamics
+simulations. The central challenge here is detecting structurally subtle but
+slow conformational changes in a dataset that might contain massive structural
+changes, like folding. Simply clustering at a tiny radius with a standard distance
+metric (RMSD) is fine in theory, but fails in practice to deal with the bias-variance
+tradeoff effectively.&lt;/p&gt;
+&lt;p&gt;The slides are written in pure markdown and rendered to HTML5 using an adapted
+version of the google-io-2012 HTML5 slide deck. The slide deck is now a little
+python package, hosted on &lt;a href="https://github.com/rmcgibbo/slidedeck"&gt;github&lt;/a&gt;. After
+installing it (&lt;code&gt;python setup.py install&lt;/code&gt;), just run &lt;code&gt;slidedeck create&lt;/code&gt; to get
+started with a new template deck, and &lt;code&gt;slidedeck render&lt;/code&gt; to make some HTML5.&lt;/p&gt;</summary><category term="group meeting"></category><category term="science"></category><category term="python"></category></entry><entry><title>Under One Roof</title><link href="http://rmcgibbo.github.io/blog/2013/05/22/under-one-roof/" rel="alternate"></link><updated>2013-05-22T22:03:00-07:00</updated><author><name>Robert McGibbon</name></author><id>tag:rmcgibbo.github.io,2013-05-22:blog/2013/05/22/under-one-roof/</id><summary type="html">&lt;p&gt;One of the goals of the MSMBuilder3 development is to make the package as easy
+to use as possible. Analyzing molecular dynamics is hard enough, so there's
+no reason that the software should get in your way.&lt;/p&gt;
+&lt;p&gt;Currently, all of the the MSMBuilder commands are separate scripts that are
+installed into your path, which means that you need to remember all of the
+commands. If you forget -- &lt;em&gt;wait, what is the name of the script for computing
+implied timescales?&lt;/em&gt; - you'll have to go back to the tutorial and check.
+That's a pain.&lt;/p&gt;
+&lt;p&gt;Most command line utilities let you access all their different utilities from
+subcommands: think &lt;code&gt;git pull&lt;/code&gt; or &lt;code&gt;svn checkout&lt;/code&gt;. For MSMBuilder3, we're going
+to put everything under &lt;code&gt;msmb&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;One immediate UX improvement is the the ability to have a help text directly
+on the root &lt;code&gt;msmb -h&lt;/code&gt; command. I'm currently developing the feature in a
+different repository, which is &lt;a href="https://github.com/rmcgibbo/msmbuilder_config"&gt;here&lt;/a&gt;.
+It's not complete yet, but it'll look something like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;rmcgibbo@Roberts-MacBook-Pro-2 ~/projects/msmbuilder_config
+$ msmb -h
+MSMBuilder: Software for building Markov State Models for Biomolecular Dynamics
+===============================================================================
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi sed nibh ut orci
+suscipit scelerisque. Sed ligula augue, blandit ac eleifend eleifend, dapibus ac
+sapien. Duis eu tortor ac erat porta vulputate. Phasellus ac nisl quis magna
+
+
+Subcommands
+-----------
+atomindices
+    Construct list of atoms for RMSD calculations
+mkprofile
+    Create a sample configuration file
+assign
+    Assign trajectories to microstates.
+cluster
+    Cluster trajectories into microstates.
+
+Options
+-------
+--log-level=&amp;lt;Enum&amp;gt; (Application.log_level)
+    Default: 30
+    Choices: (0, 10, 20, 30, 40, 50, &amp;#39;DEBUG&amp;#39;, &amp;#39;INFO&amp;#39;, &amp;#39;WARN&amp;#39;, &amp;#39;ERROR&amp;#39;, &amp;#39;CRITICAL&amp;#39;)
+    Set the log level by value or name.
+
+To see all available configurables, use `--help-all`
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Here's what the output from running one of the subcommands would look like:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;$ msmb cluster -h
+Cluster trajectories into microstates.
+======================================
+
+Output: Assignments.h5, and other files depending on your choice of distance
+metric and/or clustering algorithm.
+
+Note that there are many distance metrics and clustering algorithms available
+Many of which have multiple options and parameters.
+
+Reference
+---------
+A. B. Author, B. C. Author and C. D. Author, Title of our awesome paper. Chem.
+Theory Comput. 7, 3412 (2013)
+
+Options
+-------
+--metric_type=&amp;lt;Enum&amp;gt; (Cluster.metric_type)
+    Default: &amp;#39;RMSD&amp;#39;
+    Choices: [&amp;#39;RMSD&amp;#39;, &amp;#39;Pnorm&amp;#39;]
+    What distance metric to use?
+--representation=&amp;lt;Enum&amp;gt; (Cluster.representation)
+    Default: &amp;#39;Cartesian&amp;#39;
+    Choices: [&amp;#39;Cartesian&amp;#39;, &amp;#39;Dihedral&amp;#39;, &amp;#39;ContinuousContact&amp;#39;]
+    What representation of system to use? This amounts to picking a coordinate
+    system. The RMSD metric should operate on cartesian coordinates, but other
+    metrics require a coordinate system that removes the rotational symmetry,
+    such as the space of backbone dihedral angles (Dihedral)
+--project_fn=&amp;lt;Unicode&amp;gt; (Cluster.project_fn)
+    Default: u&amp;#39;project.yaml&amp;#39;
+    Path to project info file
+--output_dir=&amp;lt;Unicode&amp;gt; (Cluster.output_dir)
+    Default: u&amp;#39;data/&amp;#39;
+    Output directory to save clustering data. This will include: (1)
+    Assignments.h5 (If clustering is hierarchical or stride=1): Contains the
+    state assignments (2) Assignments.h5.distances (If clustering is
+    hierarchical or stride=1): Contains the distance to the generator according
+    to the distance metric that was employed (3) Gens.lh5 Trajectory object
+    representing the generators for each state
+--stride=&amp;lt;Int&amp;gt; (Cluster.stride)
+    Default: 1
+    Subsample by striding
+
+To see all available configurables, use `--help-all`
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;There are a few other goodies, including the ability to specify options both on the
+command line or in a config file. The config file is pretty easy to work with too,
+since you can create a default one with &lt;code&gt;msmb mkprofile&lt;/code&gt; that has all of the
+possible options, just commented out. It's based on the &lt;a href="http://ipython.org/ipython-doc/stable/config/overview.html"&gt;IPython configuration system&lt;/a&gt;,
+which is definitely &lt;a href="http://python.6.x6.nabble.com/IPython-config-HasTraits-Traitlets-as-an-independent-library-td5014385.html"&gt;the best&lt;/a&gt;.
+I'll post on that later.&lt;/p&gt;</summary><category term="msmbuilder"></category><category term="msmbuilder3"></category><category term="python"></category></entry></feed>

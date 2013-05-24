@@ -1,5 +1,0 @@
-venv
-output
-pelican.pid
-srv.pid
-*.pyc
