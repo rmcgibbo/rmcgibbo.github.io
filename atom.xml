@@ -57,7 +57,7 @@ uncommented lines 7 and 10 of &lt;code&gt;setup.cfg&lt;/code&gt;, and edited the
 
 &lt;p&gt;And then rebuilt the package with&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;python setup.py --with-libyaml install
-&lt;/pre&gt;&lt;/div&gt;</summary><category term="msmbuilder"></category></entry><entry><title>Projects in the Pipeline</title><link href="http://rmcgibbo.github.io/blog/2013/05/23/projects-in-the-pipeline/" rel="alternate"></link><updated>2013-05-23T00:32:00-07:00</updated><author><name>Robert McGibbon</name></author><id>tag:rmcgibbo.github.io,2013-05-23:blog/2013/05/23/projects-in-the-pipeline/</id><summary type="html">&lt;p&gt;A few of the projects on my mind right now. Some are father along than others.&lt;/p&gt;
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="msmbuilder"></category><category term="python"></category></entry><entry><title>Projects in the Pipeline</title><link href="http://rmcgibbo.github.io/blog/2013/05/23/projects-in-the-pipeline/" rel="alternate"></link><updated>2013-05-23T00:32:00-07:00</updated><author><name>Robert McGibbon</name></author><id>tag:rmcgibbo.github.io,2013-05-23:blog/2013/05/23/projects-in-the-pipeline/</id><summary type="html">&lt;p&gt;A few of the projects on my mind right now. Some are father along than others.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Accelerated conformation clustering with RMSD using a kmeans-like algorithm.
   The key to kmeans is that you can take the average of a set of data points
