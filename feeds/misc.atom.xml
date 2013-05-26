@@ -1,5 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Robert's Notebook</title><link href="http://rmcgibbo.github.io/" rel="alternate"></link><link href="/feeds/misc.atom.xml" rel="self"></link><id>http://rmcgibbo.github.io/</id><updated>2013-05-23T23:20:00-07:00</updated><entry><title>Faster PyYAML Parsing with LibYAML</title><link href="http://rmcgibbo.github.io/blog/2013/05/23/faster-yaml-parsing-with-libyaml/" rel="alternate"></link><updated>2013-05-23T23:20:00-07:00</updated><author><name>Robert McGibbon</name></author><id>tag:rmcgibbo.github.io,2013-05-23:blog/2013/05/23/faster-yaml-parsing-with-libyaml/</id><summary type="html">&lt;p&gt;This morning, &lt;a href="https://github.com/schwancr"&gt;Christian&lt;/a&gt; submitted a great
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Robert's Notebook</title><link href="http://rmcgibbo.github.io/" rel="alternate"></link><link href="/feeds/misc.atom.xml" rel="self"></link><id>http://rmcgibbo.github.io/</id><updated>2013-05-26T14:23:00-07:00</updated><entry><title>What is the uncertainty in an MSM?</title><link href="http://rmcgibbo.github.io/blog/2013/05/26/what-is-the-uncertainty-in-an-msm/" rel="alternate"></link><updated>2013-05-26T14:23:00-07:00</updated><author><name>Robert McGibbon</name></author><id>tag:rmcgibbo.github.io,2013-05-26:blog/2013/05/26/what-is-the-uncertainty-in-an-msm/</id><summary type="html">&lt;p&gt;Two major sources of error characterize a Markov state model. The first is
+the convergence of the dataset -- we can only model the processes that we've
+simulated, in some form or another. When the sampling is insufficient, its
+not like the MSM can make something out of nothing. This sampling error is
+hard to model, because we &lt;em&gt;don't know&lt;/em&gt; whats out there. The best that we can
+do is assess how "densely" sampled the data we've seen is. Do we have
+transitions that we've only seen once? If we split the dataset in half, are the
+halves look consistent with one another?&lt;/p&gt;
+&lt;p&gt;The second major source of uncertainty is uncertainty in the parameters. These
+are the number of clusters, their locations and size, and transition probabilities
+between them (also the lag time, but let's leave that aside for now).&lt;/p&gt;
+&lt;p&gt;To really assess these errors, we need an approach that models them all
+explicitly. This is challenging though -- our traditional clustering approaches
+are parametric in the number of states, so they don't allow us to naturally
+express our uncertainty there. We're going to need to go nonparametric.&lt;/p&gt;
+&lt;p&gt;Here's the idea: Small peptide (ala2 or ala5). &lt;a href="http://blog.echen.me/2012/03/20/infinite-mixture-models-with-nonparametric-bayes-and-the-dirichlet-process/"&gt;Dirichlet process gaussian mixture model&lt;/a&gt;
+"clustering" (nonparametric in number of states), with a &lt;a href="http://blog.echen.me/2012/03/20/infinite-mixture-models-with-nonparametric-bayes-and-the-dirichlet-process/"&gt;Gibbs sampler&lt;/a&gt;
+so that we can sample from the posterior over clusterings. For each
+clustering, sample transition matrices with the MCMC engine that Kyle's been
+working on. We would have to do the whole thing in probably the projected
+backbone dihedral space. It would be nice to use the &lt;a href="http://en.wikipedia.org/wiki/Von_Mises_distribution"&gt;von Mises&lt;/a&gt;
+distribution instead of the gaussian to avoid going into the sin/cos space
+doubling the number of variable.&lt;/p&gt;
+&lt;p&gt;I think going nonparameteric in the number of states is pretty key. This
+is probably going to be really expensive, and tuning the settings on the
+samplers could definitely be a nightmare (now there's a whole separate
+convergence issue to worry about), but it would be nice do a careful accounting
+for the uncertainties. Other approaches that you might do don't really model
+the uncertainty in the clustering parameters.&lt;/p&gt;
+&lt;p&gt;A simpler approach might be to run a bootstrap on the actual trajectory data.
+That's a good option too, but not as elegant. You don't get uncertainty in the
+number of states, and there are so many issues with the bootstrap on timeseries.&lt;/p&gt;</summary><category term="msmbuilder"></category><category term="science"></category></entry><entry><title>Faster PyYAML Parsing with LibYAML</title><link href="http://rmcgibbo.github.io/blog/2013/05/23/faster-yaml-parsing-with-libyaml/" rel="alternate"></link><updated>2013-05-23T23:20:00-07:00</updated><author><name>Robert McGibbon</name></author><id>tag:rmcgibbo.github.io,2013-05-23:blog/2013/05/23/faster-yaml-parsing-with-libyaml/</id><summary type="html">&lt;p&gt;This morning, &lt;a href="https://github.com/schwancr"&gt;Christian&lt;/a&gt; submitted a great
 &lt;a href="https://github.com/SimTk/msmbuilder/pull/199"&gt;pull request&lt;/a&gt; to speed up YAML
 parsing in MSMBuilder using LibYAML. In MSMBuilder,
 we use a YAML file to save the "project", which is keeps the path to all of

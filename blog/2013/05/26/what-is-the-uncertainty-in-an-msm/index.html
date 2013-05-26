@@ -4,7 +4,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Under One Roof</title>
+  <title>What is the uncertainty in an MSM?</title>
   <meta name="author" content="Robert McGibbon">
 
     <link href="/atom.xml" type="application/atom+xml" rel="alternate"
@@ -82,123 +82,53 @@
       <div>
   <article class="hentry" role="article">
     <header>
-          <h1 class="entry-title">Under One Roof</h1>
-          <p class="meta"><time datetime="2013-05-22T22:03:00" pubdate>May 22, 2013</time></p>
+          <h1 class="entry-title">What is the uncertainty in an MSM?</h1>
+          <p class="meta"><time datetime="2013-05-26T14:23:00" pubdate>May 26, 2013</time></p>
 </header>
 
-  <div class="entry-content"><p>One of the goals of the MSMBuilder3 development is to make the package as easy
-to use as possible. Analyzing molecular dynamics is hard enough, so there's
-no reason that the software should get in your way.</p>
-<p>Currently, all of the the MSMBuilder commands are separate scripts that are
-installed into your path, which means that you need to remember all of the
-commands. If you forget -- <em>wait, what is the name of the script for computing
-implied timescales?</em> - you'll have to go back to the tutorial and check.
-That's a pain.</p>
-<p>Most command line utilities let you access all their different utilities from
-subcommands: think <code>git pull</code> or <code>svn checkout</code>. For MSMBuilder3, we're going
-to put everything under <code>msmb</code>.</p>
-<p>One immediate UX improvement is the the ability to have a help text directly
-on the root <code>msmb -h</code> command. I'm currently developing the feature in a
-different repository, which is <a href="https://github.com/rmcgibbo/msmbuilder_config">here</a>.
-It's not complete yet, but it'll look something like this:</p>
-<div class="highlight"><pre>rmcgibbo@Roberts-MacBook-Pro-2 ~/projects/msmbuilder_config
-$ msmb -h
-MSMBuilder: Software for building Markov State Models for Biomolecular Dynamics
-===============================================================================
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi sed nibh ut orci
-suscipit scelerisque. Sed ligula augue, blandit ac eleifend eleifend, dapibus ac
-sapien. Duis eu tortor ac erat porta vulputate. Phasellus ac nisl quis magna
-
-
-Subcommands
------------
-atomindices
-    Construct list of atoms for RMSD calculations
-mkprofile
-    Create a sample configuration file
-assign
-    Assign trajectories to microstates.
-cluster
-    Cluster trajectories into microstates.
-
-Options
--------
---log-level=&lt;Enum&gt; (Application.log_level)
-    Default: 30
-    Choices: (0, 10, 20, 30, 40, 50, &#39;DEBUG&#39;, &#39;INFO&#39;, &#39;WARN&#39;, &#39;ERROR&#39;, &#39;CRITICAL&#39;)
-    Set the log level by value or name.
-
-To see all available configurables, use `--help-all`
-</pre></div>
-
-
-<p>Here's what the output from running one of the subcommands would look like:</p>
-<div class="highlight"><pre>$ msmb cluster -h
-Cluster trajectories into microstates.
-======================================
-
-Output: Assignments.h5, and other files depending on your choice of distance
-metric and/or clustering algorithm.
-
-Note that there are many distance metrics and clustering algorithms available
-Many of which have multiple options and parameters.
-
-Reference
----------
-A. B. Author, B. C. Author and C. D. Author, Title of our awesome paper. Chem.
-Theory Comput. 7, 3412 (2013)
-
-Options
--------
---metric_type=&lt;Enum&gt; (Cluster.metric_type)
-    Default: &#39;RMSD&#39;
-    Choices: [&#39;RMSD&#39;, &#39;Pnorm&#39;]
-    What distance metric to use?
---representation=&lt;Enum&gt; (Cluster.representation)
-    Default: &#39;Cartesian&#39;
-    Choices: [&#39;Cartesian&#39;, &#39;Dihedral&#39;, &#39;ContinuousContact&#39;]
-    What representation of system to use? This amounts to picking a coordinate
-    system. The RMSD metric should operate on cartesian coordinates, but other
-    metrics require a coordinate system that removes the rotational symmetry,
-    such as the space of backbone dihedral angles (Dihedral)
---project_fn=&lt;Unicode&gt; (Cluster.project_fn)
-    Default: u&#39;project.yaml&#39;
-    Path to project info file
---output_dir=&lt;Unicode&gt; (Cluster.output_dir)
-    Default: u&#39;data/&#39;
-    Output directory to save clustering data. This will include: (1)
-    Assignments.h5 (If clustering is hierarchical or stride=1): Contains the
-    state assignments (2) Assignments.h5.distances (If clustering is
-    hierarchical or stride=1): Contains the distance to the generator according
-    to the distance metric that was employed (3) Gens.lh5 Trajectory object
-    representing the generators for each state
---stride=&lt;Int&gt; (Cluster.stride)
-    Default: 1
-    Subsample by striding
-
-To see all available configurables, use `--help-all`
-</pre></div>
-
-
-<p>There are a few other goodies, including the ability to specify options both on the
-command line or in a config file. The config file is pretty easy to work with too,
-since you can create a default one with <code>msmb mkprofile</code> that has all of the
-possible options, just commented out. It's based on the <a href="http://ipython.org/ipython-doc/stable/config/overview.html">IPython configuration system</a>,
-which is definitely <a href="http://python.6.x6.nabble.com/IPython-config-HasTraits-Traitlets-as-an-independent-library-td5014385.html">the best</a>.
-I'll post on that later.</p></div>
+  <div class="entry-content"><p>Two major sources of error characterize a Markov state model. The first is
+the convergence of the dataset -- we can only model the processes that we've
+simulated, in some form or another. When the sampling is insufficient, its
+not like the MSM can make something out of nothing. This sampling error is
+hard to model, because we <em>don't know</em> whats out there. The best that we can
+do is assess how "densely" sampled the data we've seen is. Do we have
+transitions that we've only seen once? If we split the dataset in half, are the
+halves look consistent with one another?</p>
+<p>The second major source of uncertainty is uncertainty in the parameters. These
+are the number of clusters, their locations and size, and transition probabilities
+between them (also the lag time, but let's leave that aside for now).</p>
+<p>To really assess these errors, we need an approach that models them all
+explicitly. This is challenging though -- our traditional clustering approaches
+are parametric in the number of states, so they don't allow us to naturally
+express our uncertainty there. We're going to need to go nonparametric.</p>
+<p>Here's the idea: Small peptide (ala2 or ala5). <a href="http://blog.echen.me/2012/03/20/infinite-mixture-models-with-nonparametric-bayes-and-the-dirichlet-process/">Dirichlet process gaussian mixture model</a>
+"clustering" (nonparametric in number of states), with a <a href="http://blog.echen.me/2012/03/20/infinite-mixture-models-with-nonparametric-bayes-and-the-dirichlet-process/">Gibbs sampler</a>
+so that we can sample from the posterior over clusterings. For each
+clustering, sample transition matrices with the MCMC engine that Kyle's been
+working on. We would have to do the whole thing in probably the projected
+backbone dihedral space. It would be nice to use the <a href="http://en.wikipedia.org/wiki/Von_Mises_distribution">von Mises</a>
+distribution instead of the gaussian to avoid going into the sin/cos space
+doubling the number of variable.</p>
+<p>I think going nonparameteric in the number of states is pretty key. This
+is probably going to be really expensive, and tuning the settings on the
+samplers could definitely be a nightmare (now there's a whole separate
+convergence issue to worry about), but it would be nice do a careful accounting
+for the uncertainties. Other approaches that you might do don't really model
+the uncertainty in the clustering parameters.</p>
+<p>A simpler approach might be to run a bootstrap on the actual trajectory data.
+That's a good option too, but not as elegant. You don't get uncertainty in the
+number of states, and there are so many issues with the bootstrap on timeseries.</p></div>
     <footer>
       <p class="meta">
   <span class="byline author vcard">
     Posted by <span class="fn">Robert McGibbon</span>
   </span>
-  <time datetime="2013-05-22T22:03:00" pubdate>May 22, 2013</time>    <span class="categories">
+  <time datetime="2013-05-26T14:23:00" pubdate>May 26, 2013</time>    <span class="categories">
         <a class="category" href="http://rmcgibbo.github.io/tag/msmbuilder.html">msmbuilder</a>
-        <a class="category" href="http://rmcgibbo.github.io/tag/msmbuilder3.html">msmbuilder3</a>
-        <a class="category" href="http://rmcgibbo.github.io/tag/python.html">python</a>
+        <a class="category" href="http://rmcgibbo.github.io/tag/science.html">science</a>
       </span>
   </p>      <div class="sharing">
-    <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://rmcgibbo.github.io/blog/2013/05/22/under-one-roof/" data-via="rmcgibbo" data-counturl="http://rmcgibbo.github.io/blog/2013/05/22/under-one-roof/" >Tweet</a>
+    <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://rmcgibbo.github.io/blog/2013/05/26/what-is-the-uncertainty-in-an-msm/" data-via="rmcgibbo" data-counturl="http://rmcgibbo.github.io/blog/2013/05/26/what-is-the-uncertainty-in-an-msm/" >Tweet</a>
       </div>    </footer>
   </article>
 
@@ -308,9 +238,9 @@ I'll post on that later.</p></div>
 	    } catch(err) {}
 	</script>
 	<script type="text/javascript">
-	            var disqus_identifier = 'http://rmcgibbo.github.io/blog/2013/05/22/under-one-roof/';
-          var disqus_url = 'http://rmcgibbo.github.io/blog/2013/05/22/under-one-roof/';
-	  var disqus_title = 'Under One Roof';
+	            var disqus_identifier = 'http://rmcgibbo.github.io/blog/2013/05/26/what-is-the-uncertainty-in-an-msm/';
+          var disqus_url = 'http://rmcgibbo.github.io/blog/2013/05/26/what-is-the-uncertainty-in-an-msm/';
+	  var disqus_title = 'What is the uncertainty in an MSM?';
 	  	  var disqus_shortname = 'rmcgibbo';
 	  (function() {
 	    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
