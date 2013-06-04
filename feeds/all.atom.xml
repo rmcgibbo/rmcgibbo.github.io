@@ -1,5 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Robert's Notebook</title><link href="http://rmcgibbo.github.io/" rel="alternate"></link><link href="/feeds/all.atom.xml" rel="self"></link><id>http://rmcgibbo.github.io/</id><updated>2013-05-26T14:23:00-07:00</updated><entry><title>What is the uncertainty in an MSM?</title><link href="http://rmcgibbo.github.io/blog/2013/05/26/what-is-the-uncertainty-in-an-msm/" rel="alternate"></link><updated>2013-05-26T14:23:00-07:00</updated><author><name>Robert McGibbon</name></author><id>tag:rmcgibbo.github.io,2013-05-26:blog/2013/05/26/what-is-the-uncertainty-in-an-msm/</id><summary type="html">&lt;p&gt;Two major sources of error characterize a Markov state model. The first is
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Robert's Notebook</title><link href="http://rmcgibbo.github.io/" rel="alternate"></link><link href="/feeds/all.atom.xml" rel="self"></link><id>http://rmcgibbo.github.io/</id><updated>2013-06-03T19:40:00-07:00</updated><entry><title>Setting up Swift</title><link href="http://rmcgibbo.github.io/blog/2013/06/03/setting-up-swift/" rel="alternate"></link><updated>2013-06-03T19:40:00-07:00</updated><author><name>Robert McGibbon</name></author><id>tag:rmcgibbo.github.io,2013-06-03:blog/2013/06/03/setting-up-swift/</id><summary type="html">&lt;p&gt;&lt;a href="http://www.ci.uchicago.edu/swift/main/"&gt;Swift&lt;/a&gt; is a parallel scripting language
+developed at the U. Chicago Computation Institute. It provides a way to manage
+heterogeneous clusters. I have &lt;code&gt;n&lt;/code&gt; jobs that I want to get done, and I have access
+to about 5 high performance computing clusters. I really &lt;em&gt;dont&lt;/em&gt; want to handle
+file transfer, checking &lt;code&gt;qstat&lt;/code&gt; to see where there's resource availability, etc.
+I want my jobs to run wherever they can, as fast as possible.&lt;/p&gt;
+&lt;p&gt;First, I downloaded the 0.94 release from &lt;a href="http://www.ci.uchicago.edu/swift/downloads/"&gt;here&lt;/a&gt;,
+I untarred it in &lt;code&gt;$HOME/local/swift-0.94&lt;/code&gt;, and added the executables
+to my &lt;code&gt;$PATH&lt;/code&gt;. Also, I set the &lt;code&gt;$SWIFT_HOME&lt;/code&gt; env variable.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; &lt;span class="nv"&gt;$HOME&lt;/span&gt;/local
+wget http://www.ci.uchicago.edu/swift/packages/swift-0.94.tar.gz
+tar -xzvf swift-0.94.tar.gz
+&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;$SWIFT_HOME&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$HOME&lt;/span&gt;/local/swift-0.94
+&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;$PATH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$SWIFT_HOME&lt;/span&gt;/bin:&lt;span class="nv"&gt;$PATH&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Setting up our cluster&lt;/h2&gt;
+&lt;p&gt;First, we add a new cluster to &lt;code&gt;sites.xml&lt;/code&gt; file. This is a file that tells swift
+what clusters we have available to us, and what their queues look like. The file
+is located in &lt;code&gt;$SWIFT_HOME/etc/sites.xml&lt;/code&gt;. I added the following new &lt;code&gt;pool&lt;/code&gt; to
+the file to describe our groups little analysis cluster, vsp-compute.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nt"&gt;&amp;lt;pool&lt;/span&gt; &lt;span class="na"&gt;handle=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;vsp-compute&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class="c"&gt;&amp;lt;!-- I don&amp;#39;t really understand what&amp;#39;s going on here... I tried using provider=&amp;quot;local&amp;quot;, but couldn&amp;#39;t get it to work --&amp;gt;&lt;/span&gt;
+  &lt;span class="nt"&gt;&amp;lt;filesystem&lt;/span&gt; &lt;span class="na"&gt;provider=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;ssh&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;url=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;vsp-compute-01.stanford.edu&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+
+  &lt;span class="c"&gt;&amp;lt;!-- use the &amp;quot;coaster&amp;quot; provider, which enables Swift to ssh to another system and qsub from there --&amp;gt;&lt;/span&gt;
+  &lt;span class="nt"&gt;&amp;lt;execution&lt;/span&gt; &lt;span class="na"&gt;provider=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;coaster&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;jobmanager=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;ssh-cl:pbs&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;url=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;vsp-compute-01.stanford.edu&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;/&amp;gt;&lt;/span&gt;
+
+  &lt;span class="c"&gt;&amp;lt;!-- app() tasks should be limited to 5 minutes walltime --&amp;gt;&lt;/span&gt;
+  &lt;span class="nt"&gt;&amp;lt;profile&lt;/span&gt; &lt;span class="na"&gt;namespace=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;globus&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;key=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;maxWalltime&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;00:05:00&lt;span class="nt"&gt;&amp;lt;/profile&amp;gt;&lt;/span&gt;
+
+  &lt;span class="c"&gt;&amp;lt;!-- app() tasks will be run within PBS coaster &amp;quot;pilot&amp;quot; jobs. Each PBS job should have a walltime of 1 hour --&amp;gt;&lt;/span&gt;
+  &lt;span class="nt"&gt;&amp;lt;profile&lt;/span&gt; &lt;span class="na"&gt;namespace=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;globus&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;key=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;lowOverAllocation&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;100&lt;span class="nt"&gt;&amp;lt;/profile&amp;gt;&lt;/span&gt;
+  &lt;span class="nt"&gt;&amp;lt;profile&lt;/span&gt; &lt;span class="na"&gt;namespace=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;globus&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;key=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;highOverAllocation&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;100&lt;span class="nt"&gt;&amp;lt;/profile&amp;gt;&lt;/span&gt;
+  &lt;span class="nt"&gt;&amp;lt;profile&lt;/span&gt; &lt;span class="na"&gt;namespace=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;globus&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;key=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;maxtime&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;3600&lt;span class="nt"&gt;&amp;lt;/profile&amp;gt;&lt;/span&gt;
+
+  &lt;span class="c"&gt;&amp;lt;!-- Up to 5 concurrent PBS coaster jobs each asking for 1 node will be submitted to the default queue --&amp;gt;&lt;/span&gt;
+  &lt;span class="nt"&gt;&amp;lt;profile&lt;/span&gt; &lt;span class="na"&gt;namespace=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;globus&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;key=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;queue&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;default&lt;span class="nt"&gt;&amp;lt;/profile&amp;gt;&lt;/span&gt;
+  &lt;span class="nt"&gt;&amp;lt;profile&lt;/span&gt; &lt;span class="na"&gt;namespace=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;globus&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;key=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;slots&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;5&lt;span class="nt"&gt;&amp;lt;/profile&amp;gt;&lt;/span&gt;
+  &lt;span class="nt"&gt;&amp;lt;profile&lt;/span&gt; &lt;span class="na"&gt;namespace=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;globus&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;key=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;maxnodes&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;1&lt;span class="nt"&gt;&amp;lt;/profile&amp;gt;&lt;/span&gt;
+  &lt;span class="nt"&gt;&amp;lt;profile&lt;/span&gt; &lt;span class="na"&gt;namespace=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;globus&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;key=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;nodeGranularity&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;1&lt;span class="nt"&gt;&amp;lt;/profile&amp;gt;&lt;/span&gt;
+
+  &lt;span class="c"&gt;&amp;lt;!-- Swift should run only one app() task at a time within each PBS job slot --&amp;gt;&lt;/span&gt;
+  &lt;span class="nt"&gt;&amp;lt;profile&lt;/span&gt; &lt;span class="na"&gt;namespace=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;globus&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;key=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;jobsPerNode&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;1&lt;span class="nt"&gt;&amp;lt;/profile&amp;gt;&lt;/span&gt;
+
+  &lt;span class="nt"&gt;&amp;lt;profile&lt;/span&gt; &lt;span class="na"&gt;namespace=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;karajan&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;key=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;jobThrottle&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;1.00&lt;span class="nt"&gt;&amp;lt;/profile&amp;gt;&lt;/span&gt;
+  &lt;span class="nt"&gt;&amp;lt;profile&lt;/span&gt; &lt;span class="na"&gt;namespace=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;karajan&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;key=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;initialScore&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;10000&lt;span class="nt"&gt;&amp;lt;/profile&amp;gt;&lt;/span&gt;
+
+  &lt;span class="c"&gt;&amp;lt;!-- note, this directory must be accessible from the shared filesystem on the compute nodes --&amp;gt;&lt;/span&gt;
+  &lt;span class="nt"&gt;&amp;lt;workdirectory&amp;gt;&lt;/span&gt;/home/{env.USER}/.swiftwork&lt;span class="nt"&gt;&amp;lt;/workdirectory&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;/pool&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Next, we set up the transformations catalog, &lt;code&gt;tc.data&lt;/code&gt;. This file specifies what
+commands are installed on each machine. The user specific &lt;code&gt;tc.data&lt;/code&gt; is in
+&lt;code&gt;$SWIFT_HOME/etc/tc.data&lt;/code&gt;. I added two lines to the bottom, to describe the
+software available there. The lines are&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="cp"&gt;# vsp-compute&lt;/span&gt;
+&lt;span class="n"&gt;vsp&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;compute&lt;/span&gt;     &lt;span class="n"&gt;uname&lt;/span&gt;   &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;uname&lt;/span&gt;  &lt;span class="n"&gt;null&lt;/span&gt;    &lt;span class="n"&gt;null&lt;/span&gt;    &lt;span class="n"&gt;null&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This tells the swift execution engine that the uname command is available on vsp-compute.&lt;/p&gt;
+&lt;h2&gt;Dealing with a weird ssh issue&lt;/h2&gt;
+&lt;p&gt;There was an issue with my ssh keys. To save you the pain of debugging this,
+if you have a file on your machine at &lt;code&gt;$HOME/.ssh/id_rsa.pub&lt;/code&gt;, but not one at
+&lt;code&gt;$HOME/.ssh/identity.pub&lt;/code&gt;, make these softlinks.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;ln -s ~/.ssh/id_rsa ~/.ssh/identity
+ln -s ~/.ssh/id_rsa.pub ~/.ssh/identity.pub
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Running a parallel script&lt;/h2&gt;
+&lt;p&gt;Enough configuration! Here's the script that I want to execute. It just runs
+the *nix &lt;code&gt;uname&lt;/code&gt; command. Remember, this command needs to be available in &lt;code&gt;tc.data&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Here's my swift script.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# uname.swift&lt;/span&gt;
+&lt;span class="nb"&gt;type&lt;/span&gt; &lt;span class="nb"&gt;file&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;file&lt;/span&gt; &lt;span class="n"&gt;o&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;uname&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="c"&gt;# execute the uname command, with the argument -a, sending stdout to a file&lt;/span&gt;
+  &lt;span class="n"&gt;uname&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;-a&amp;quot;&lt;/span&gt; &lt;span class="n"&gt;stdout&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nd"&gt;@o&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="nb"&gt;file&lt;/span&gt; &lt;span class="n"&gt;outfile&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;uname.txt&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="n"&gt;outfile&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;uname&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;To run it, I just execute the script from the command line&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;swift uname.swift
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The following gets printed to my terminal&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;Swift&lt;/span&gt; &lt;span class="mf"&gt;0.94&lt;/span&gt; &lt;span class="n"&gt;swift&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;r6492&lt;/span&gt; &lt;span class="n"&gt;cog&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;r3658&lt;/span&gt;
+
+&lt;span class="nl"&gt;RunID:&lt;/span&gt; &lt;span class="mi"&gt;20130603&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;2025&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;lhkz86se&lt;/span&gt;
+&lt;span class="nl"&gt;Progress:&lt;/span&gt;  &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Mon&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mo"&gt;03&lt;/span&gt; &lt;span class="n"&gt;Jun&lt;/span&gt; &lt;span class="mi"&gt;2013&lt;/span&gt; &lt;span class="mi"&gt;20&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;25&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;52&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;0700&lt;/span&gt;
+&lt;span class="mi"&gt;2013&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;06&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;03&lt;/span&gt; &lt;span class="mi"&gt;20&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;25&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mf"&gt;53.543&lt;/span&gt; &lt;span class="n"&gt;java&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;80572&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mf"&gt;1f&lt;/span&gt;&lt;span class="mo"&gt;07&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="n"&gt;Loading&lt;/span&gt; &lt;span class="n"&gt;Maximizer&lt;/span&gt; &lt;span class="n"&gt;into&lt;/span&gt; &lt;span class="n"&gt;bundle&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apple&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;javajdk16&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cmd&lt;/span&gt;
+&lt;span class="mi"&gt;2013&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;06&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;03&lt;/span&gt; &lt;span class="mi"&gt;20&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;25&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mf"&gt;54.444&lt;/span&gt; &lt;span class="n"&gt;java&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;80572&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mf"&gt;1f&lt;/span&gt;&lt;span class="mo"&gt;07&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="n"&gt;Maximizer&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Unsupported&lt;/span&gt; &lt;span class="n"&gt;window&lt;/span&gt; &lt;span class="n"&gt;created&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="n"&gt;class&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;CocoaAppWindow&lt;/span&gt;
+&lt;span class="nl"&gt;Progress:&lt;/span&gt;  &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Mon&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mo"&gt;03&lt;/span&gt; &lt;span class="n"&gt;Jun&lt;/span&gt; &lt;span class="mi"&gt;2013&lt;/span&gt; &lt;span class="mi"&gt;20&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;26&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mo"&gt;04&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;0700&lt;/span&gt;  &lt;span class="n"&gt;Stage&lt;/span&gt; &lt;span class="n"&gt;in&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;
+&lt;span class="nl"&gt;Progress:&lt;/span&gt;  &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Mon&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mo"&gt;03&lt;/span&gt; &lt;span class="n"&gt;Jun&lt;/span&gt; &lt;span class="mi"&gt;2013&lt;/span&gt; &lt;span class="mi"&gt;20&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;26&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;08&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;0700&lt;/span&gt;  &lt;span class="n"&gt;Submitted&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;
+&lt;span class="nl"&gt;Progress:&lt;/span&gt;  &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Mon&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mo"&gt;03&lt;/span&gt; &lt;span class="n"&gt;Jun&lt;/span&gt; &lt;span class="mi"&gt;2013&lt;/span&gt; &lt;span class="mi"&gt;20&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;26&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;0700&lt;/span&gt;  &lt;span class="n"&gt;Active&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;
+&lt;span class="nl"&gt;Progress:&lt;/span&gt;  &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Mon&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mo"&gt;03&lt;/span&gt; &lt;span class="n"&gt;Jun&lt;/span&gt; &lt;span class="mi"&gt;2013&lt;/span&gt; &lt;span class="mi"&gt;20&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;26&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;13&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;0700&lt;/span&gt;  &lt;span class="n"&gt;Checking&lt;/span&gt; &lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;
+&lt;span class="n"&gt;Final&lt;/span&gt; &lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Mon&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mo"&gt;03&lt;/span&gt; &lt;span class="n"&gt;Jun&lt;/span&gt; &lt;span class="mi"&gt;2013&lt;/span&gt; &lt;span class="mi"&gt;20&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;26&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;13&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;0700&lt;/span&gt;  &lt;span class="n"&gt;Finished&lt;/span&gt; &lt;span class="n"&gt;successfully&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Looking in my working directory, I now have a new file called &lt;code&gt;uname.txt&lt;/code&gt;. The
+file indicates that the job ran on one of the vsp-compute worker nodes. Swift
+transparently submitted a pbs job, and copied the results back to my workstation.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;cat uname.txt
+Linux vsp-compute-31.Stanford.EDU 2.6.18-274.el5 &lt;span class="c"&gt;#1 SMP Fri Jul 22 04:43:29 EDT 2011 x86_64 x86_64 x86_64 GNU/Linux&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</summary></entry><entry><title>What is the uncertainty in an MSM?</title><link href="http://rmcgibbo.github.io/blog/2013/05/26/what-is-the-uncertainty-in-an-msm/" rel="alternate"></link><updated>2013-05-26T14:23:00-07:00</updated><author><name>Robert McGibbon</name></author><id>tag:rmcgibbo.github.io,2013-05-26:blog/2013/05/26/what-is-the-uncertainty-in-an-msm/</id><summary type="html">&lt;p&gt;Two major sources of error characterize a Markov state model. The first is
 the convergence of the dataset -- we can only model the processes that we've
 simulated, in some form or another. When the sampling is insufficient, its
 not like the MSM can make something out of nothing. This sampling error is
