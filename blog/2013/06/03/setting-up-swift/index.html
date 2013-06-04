@@ -94,24 +94,22 @@ file transfer, checking <code>qstat</code> to see where there's resource availab
 I want my jobs to run wherever they can, as fast as possible.</p>
 <p>First, I downloaded the 0.94 release from <a href="http://www.ci.uchicago.edu/swift/downloads/">here</a>,
 I untarred it in <code>$HOME/local/swift-0.94</code>, and added the executables
-to my <code>$PATH</code>. Also, I set the <code>$SWIFT_HOME</code> env variable.</p>
+to my <code>$PATH</code>.</p>
 <div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$HOME</span>/local
 wget http://www.ci.uchicago.edu/swift/packages/swift-0.94.tar.gz
 tar -xzvf swift-0.94.tar.gz
-<span class="nb">export</span> <span class="nv">$SWIFT_HOME</span><span class="o">=</span><span class="nv">$HOME</span>/local/swift-0.94
-<span class="nb">export</span> <span class="nv">$PATH</span><span class="o">=</span><span class="nv">$SWIFT_HOME</span>/bin:<span class="nv">$PATH</span>
+<span class="nb">export</span> <span class="nv">$PATH</span><span class="o">=</span><span class="nv">$HOME</span>/local/swift-0.94/bin:<span class="nv">$PATH</span>
 </pre></div>
 
 
 <h2>Setting up our cluster</h2>
 <p>First, we add a new cluster to <code>sites.xml</code> file. This is a file that tells swift
 what clusters we have available to us, and what their queues look like. The file
-is located in <code>$SWIFT_HOME/etc/sites.xml</code>. I added the following new <code>pool</code> to
-the file to describe our groups little analysis cluster, vsp-compute.</p>
+is located in <code>$HOME/local/swift-0.94/etc/sites.xml</code>. I added the following
+new <code>pool</code> to the file to describe our groups little analysis cluster, vsp-compute.
+vsp-compute is a 40 node linux cluster, with a shared filesystem between the nodes.
+Each node has individual (node-local) space mounted on /scratch.</p>
 <div class="highlight"><pre><span class="nt">&lt;pool</span> <span class="na">handle=</span><span class="s">&quot;vsp-compute&quot;</span><span class="nt">&gt;</span>
-  <span class="c">&lt;!-- I don&#39;t really understand what&#39;s going on here... I tried using provider=&quot;local&quot;, but couldn&#39;t get it to work --&gt;</span>
-  <span class="nt">&lt;filesystem</span> <span class="na">provider=</span><span class="s">&quot;ssh&quot;</span> <span class="na">url=</span><span class="s">&quot;vsp-compute-01.stanford.edu&quot;</span><span class="nt">/&gt;</span>
-
   <span class="c">&lt;!-- use the &quot;coaster&quot; provider, which enables Swift to ssh to another system and qsub from there --&gt;</span>
   <span class="nt">&lt;execution</span> <span class="na">provider=</span><span class="s">&quot;coaster&quot;</span> <span class="na">jobmanager=</span><span class="s">&quot;ssh-cl:pbs&quot;</span> <span class="na">url=</span><span class="s">&quot;vsp-compute-01.stanford.edu&quot;</span><span class="nt">/&gt;</span>
 
@@ -135,22 +133,40 @@ the file to describe our groups little analysis cluster, vsp-compute.</p>
   <span class="nt">&lt;profile</span> <span class="na">namespace=</span><span class="s">&quot;karajan&quot;</span> <span class="na">key=</span><span class="s">&quot;jobThrottle&quot;</span><span class="nt">&gt;</span>1.00<span class="nt">&lt;/profile&gt;</span>
   <span class="nt">&lt;profile</span> <span class="na">namespace=</span><span class="s">&quot;karajan&quot;</span> <span class="na">key=</span><span class="s">&quot;initialScore&quot;</span><span class="nt">&gt;</span>10000<span class="nt">&lt;/profile&gt;</span>
 
-  <span class="c">&lt;!-- note, this directory must be accessible from the shared filesystem on the compute nodes --&gt;</span>
-  <span class="nt">&lt;workdirectory&gt;</span>/home/{env.USER}/.swiftwork<span class="nt">&lt;/workdirectory&gt;</span>
+  <span class="c">&lt;!-- the scratch filesystem is unique to each node, and not shared across the cluster --&gt;</span>
+  <span class="nt">&lt;workdirectory&gt;</span>/scratch/{env.USER}/.swiftwork<span class="nt">&lt;/workdirectory&gt;</span>
 <span class="nt">&lt;/pool&gt;</span>
 </pre></div>
 
 
 <p>Next, we set up the transformations catalog, <code>tc.data</code>. This file specifies what
 commands are installed on each machine. The user specific <code>tc.data</code> is in
-<code>$SWIFT_HOME/etc/tc.data</code>. I added two lines to the bottom, to describe the
-software available there. The lines are</p>
+<code>$HOME/local/swift-0.94/etc/tc.data</code>. I added two lines to the bottom,
+to describe the software available there. The lines are</p>
 <div class="highlight"><pre><span class="cp"># vsp-compute</span>
 <span class="n">vsp</span><span class="o">-</span><span class="n">compute</span>     <span class="n">uname</span>   <span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">uname</span>  <span class="n">null</span>    <span class="n">null</span>    <span class="n">null</span>
+<span class="n">vsp</span><span class="o">-</span><span class="n">compute</span>     <span class="n">wc</span>      <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">wc</span> <span class="n">null</span>    <span class="n">null</span>    <span class="n">null</span>
 </pre></div>
 
 
-<p>This tells the swift execution engine that the uname command is available on vsp-compute.</p>
+<p>This tells the swift execution engine that the <code>uname</code> and <code>wc</code> commands are
+available on vsp-compute.</p>
+<h2>Setting the swift.properties file</h2>
+<p>How should we transfer the input files to the compute nodes (and bring the
+output files back). One option is called "coaster provider staging". To set
+this up, I opened up the <code>$HOME/local/swift-0.94/etc/swift.properties</code> file,
+and changed these four settings.</p>
+<div class="highlight"><pre><span class="cp"># this lets the provider deal with the staging of files. we want this because</span>
+<span class="cp"># vsp-compute does not share a shared filesystem with my workstation.</span>
+<span class="n">use</span><span class="p">.</span><span class="n">provider</span><span class="p">.</span><span class="n">staging</span><span class="o">=</span><span class="nb">true</span>
+<span class="n">provider</span><span class="p">.</span><span class="n">staging</span><span class="p">.</span><span class="n">pin</span><span class="p">.</span><span class="n">swiftfiles</span><span class="o">=</span><span class="nb">true</span>
+<span class="n">status</span><span class="p">.</span><span class="n">mode</span><span class="o">=</span><span class="n">provider</span>
+
+<span class="cp"># this is just for debugging</span>
+<span class="n">wrapperlog</span><span class="p">.</span><span class="n">always</span><span class="p">.</span><span class="n">transfer</span><span class="o">=</span><span class="nb">true</span>
+</pre></div>
+
+
 <h2>Dealing with a weird ssh issue</h2>
 <p>There was an issue with my ssh keys. To save you the pain of debugging this,
 if you have a file on your machine at <code>$HOME/.ssh/id_rsa.pub</code>, but not one at
@@ -185,15 +201,12 @@ the *nix <code>uname</code> command. Remember, this command needs to be availabl
 <p>The following gets printed to my terminal</p>
 <div class="highlight"><pre><span class="n">Swift</span> <span class="mf">0.94</span> <span class="n">swift</span><span class="o">-</span><span class="n">r6492</span> <span class="n">cog</span><span class="o">-</span><span class="n">r3658</span>
 
-<span class="nl">RunID:</span> <span class="mi">20130603</span><span class="o">-</span><span class="mi">2025</span><span class="o">-</span><span class="n">lhkz86se</span>
-<span class="nl">Progress:</span>  <span class="n">time</span><span class="o">:</span> <span class="n">Mon</span><span class="p">,</span> <span class="mo">03</span> <span class="n">Jun</span> <span class="mi">2013</span> <span class="mi">20</span><span class="o">:</span><span class="mi">25</span><span class="o">:</span><span class="mi">52</span> <span class="o">-</span><span class="mo">0700</span>
-<span class="mi">2013</span><span class="o">-</span><span class="mo">06</span><span class="o">-</span><span class="mo">03</span> <span class="mi">20</span><span class="o">:</span><span class="mi">25</span><span class="o">:</span><span class="mf">53.543</span> <span class="n">java</span><span class="p">[</span><span class="mi">80572</span><span class="o">:</span><span class="mf">1f</span><span class="mo">07</span><span class="p">]</span> <span class="n">Loading</span> <span class="n">Maximizer</span> <span class="n">into</span> <span class="n">bundle</span><span class="o">:</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">javajdk16</span><span class="p">.</span><span class="n">cmd</span>
-<span class="mi">2013</span><span class="o">-</span><span class="mo">06</span><span class="o">-</span><span class="mo">03</span> <span class="mi">20</span><span class="o">:</span><span class="mi">25</span><span class="o">:</span><span class="mf">54.444</span> <span class="n">java</span><span class="p">[</span><span class="mi">80572</span><span class="o">:</span><span class="mf">1f</span><span class="mo">07</span><span class="p">]</span> <span class="n">Maximizer</span><span class="o">:</span> <span class="n">Unsupported</span> <span class="n">window</span> <span class="n">created</span> <span class="n">of</span> <span class="n">class</span><span class="o">:</span> <span class="n">CocoaAppWindow</span>
-<span class="nl">Progress:</span>  <span class="n">time</span><span class="o">:</span> <span class="n">Mon</span><span class="p">,</span> <span class="mo">03</span> <span class="n">Jun</span> <span class="mi">2013</span> <span class="mi">20</span><span class="o">:</span><span class="mi">26</span><span class="o">:</span><span class="mo">04</span> <span class="o">-</span><span class="mo">0700</span>  <span class="n">Stage</span> <span class="n">in</span><span class="o">:</span><span class="mi">1</span>
-<span class="nl">Progress:</span>  <span class="n">time</span><span class="o">:</span> <span class="n">Mon</span><span class="p">,</span> <span class="mo">03</span> <span class="n">Jun</span> <span class="mi">2013</span> <span class="mi">20</span><span class="o">:</span><span class="mi">26</span><span class="o">:</span><span class="mi">08</span> <span class="o">-</span><span class="mo">0700</span>  <span class="n">Submitted</span><span class="o">:</span><span class="mi">1</span>
-<span class="nl">Progress:</span>  <span class="n">time</span><span class="o">:</span> <span class="n">Mon</span><span class="p">,</span> <span class="mo">03</span> <span class="n">Jun</span> <span class="mi">2013</span> <span class="mi">20</span><span class="o">:</span><span class="mi">26</span><span class="o">:</span><span class="mi">10</span> <span class="o">-</span><span class="mo">0700</span>  <span class="n">Active</span><span class="o">:</span><span class="mi">1</span>
-<span class="nl">Progress:</span>  <span class="n">time</span><span class="o">:</span> <span class="n">Mon</span><span class="p">,</span> <span class="mo">03</span> <span class="n">Jun</span> <span class="mi">2013</span> <span class="mi">20</span><span class="o">:</span><span class="mi">26</span><span class="o">:</span><span class="mi">13</span> <span class="o">-</span><span class="mo">0700</span>  <span class="n">Checking</span> <span class="n">status</span><span class="o">:</span><span class="mi">1</span>
-<span class="n">Final</span> <span class="n">status</span><span class="o">:</span> <span class="n">Mon</span><span class="p">,</span> <span class="mo">03</span> <span class="n">Jun</span> <span class="mi">2013</span> <span class="mi">20</span><span class="o">:</span><span class="mi">26</span><span class="o">:</span><span class="mi">13</span> <span class="o">-</span><span class="mo">0700</span>  <span class="n">Finished</span> <span class="n">successfully</span><span class="o">:</span><span class="mi">1</span>
+<span class="nl">RunID:</span> <span class="mi">20130604</span><span class="o">-</span><span class="mi">1330</span><span class="o">-</span><span class="n">fpx5r78b</span>
+<span class="nl">Progress:</span>  <span class="n">time</span><span class="o">:</span> <span class="n">Tue</span><span class="p">,</span> <span class="mo">04</span> <span class="n">Jun</span> <span class="mi">2013</span> <span class="mi">13</span><span class="o">:</span><span class="mi">30</span><span class="o">:</span><span class="mo">06</span> <span class="o">-</span><span class="mo">0700</span>
+<span class="nl">Progress:</span>  <span class="n">time</span><span class="o">:</span> <span class="n">Tue</span><span class="p">,</span> <span class="mo">04</span> <span class="n">Jun</span> <span class="mi">2013</span> <span class="mi">13</span><span class="o">:</span><span class="mi">30</span><span class="o">:</span><span class="mi">36</span> <span class="o">-</span><span class="mo">0700</span>  <span class="n">Submitting</span><span class="o">:</span><span class="mi">1</span>
+<span class="nl">Progress:</span>  <span class="n">time</span><span class="o">:</span> <span class="n">Tue</span><span class="p">,</span> <span class="mo">04</span> <span class="n">Jun</span> <span class="mi">2013</span> <span class="mi">13</span><span class="o">:</span><span class="mi">30</span><span class="o">:</span><span class="mi">49</span> <span class="o">-</span><span class="mo">0700</span>  <span class="n">Submitted</span><span class="o">:</span><span class="mi">1</span>
+<span class="nl">Progress:</span>  <span class="n">time</span><span class="o">:</span> <span class="n">Tue</span><span class="p">,</span> <span class="mo">04</span> <span class="n">Jun</span> <span class="mi">2013</span> <span class="mi">13</span><span class="o">:</span><span class="mi">30</span><span class="o">:</span><span class="mi">51</span> <span class="o">-</span><span class="mo">0700</span>  <span class="n">Stage</span> <span class="n">in</span><span class="o">:</span><span class="mi">1</span>
+<span class="n">Final</span> <span class="n">status</span><span class="o">:</span> <span class="n">Tue</span><span class="p">,</span> <span class="mo">04</span> <span class="n">Jun</span> <span class="mi">2013</span> <span class="mi">13</span><span class="o">:</span><span class="mi">30</span><span class="o">:</span><span class="mi">51</span> <span class="o">-</span><span class="mo">0700</span>  <span class="n">Finished</span> <span class="n">successfully</span><span class="o">:</span><span class="mi">1</span>
 </pre></div>
 
 
